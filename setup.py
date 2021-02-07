@@ -16,5 +16,5 @@ setup(
     download_url     = 'https://github.com/PowerBroker2/rfd900x/archive/0.0.3.tar.gz',
     keywords         = ['RFD', 'RFD-900', 'RFD-900x', 'RFD-900+', 'RFD 900', 'RFD 900x', 'RFD 900+'],
     classifiers      = [],
-    install_requires = []
+    install_requires = ['pyserial']
 )
