@@ -416,7 +416,7 @@ class RFDConfig(object):
                                            'desValRemote':    None,
                                            'sameOnAllModems': None}}
     
-    def send(self, command, timeout=0.01):
+    def send(self, command, timeout=0.1):
         '''
         TODO
         '''
@@ -451,7 +451,7 @@ class RFDConfig(object):
         '''
         
         if len(response.split()) >= 2:
-            if not response.split()[1].upper() == 'ERROR':
+            if (not response.split()[1].upper() == 'ERROR') and (not '?' in response):
                 return True
             else:
                 return False
