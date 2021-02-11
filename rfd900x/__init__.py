@@ -305,49 +305,49 @@ class RFDConfig(object):
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': True},
                        'Print':           {'id':              'PP',
                                            'description':     'Print all Pin Settings',
                                            'curVal':          None,
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': False},
                        'Input':           {'id':              'PI={x}',
                                            'description':     'Set Pin x to Input',
                                            'curVal':          None,
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': False},
                        'Read':            {'id':              'PR={x}',
                                            'description':     'Read Pin X value (When set to input)',
                                            'curVal':          None,
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': False},
                        'Output':          {'id':              'PO={x}',
                                            'description':     'Set Pin x to Output (Default) can only be controlled by ATPC',
                                            'curVal':          None,
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': False},
                        'ControlOn':       {'id':              'PC={x},1',
                                            'description':     'Turn pin x on -­‐ Output Mode / Set internal pull up resistor -­‐ Input Mode',
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None},
+                                           'sameOnAllModems': False},
                        'ControlOff':      {'id':              'PC={x},0',
                                            'description':     'Turn pin x off -­‐ Output Mode / Set internal pull down resistor -­‐ Input Mode',
                                            'curVal':          None,
                                            'desVal':          None,
                                            'curValRemote':    None,
                                            'desValRemote':    None,
-                                           'sameOnAllModems': None}}
+                                           'sameOnAllModems': False}}
     
-    def send(self, command, timeout=0.1):
+    def send(self, command, timeout=0.05):
         '''
         TODO
         '''
@@ -515,7 +515,7 @@ class RFDConfig(object):
         
         if self.port.isOpen():
             for param in self.params.keys():
-                self.loadParam(param)
+                self.loadParam(param, local)
     
     def writeOutParam(self, param, local=True):
         '''
@@ -548,7 +548,7 @@ class RFDConfig(object):
         TODO
         '''
         
-        return self.responseGood(self.send_and_rec('RTI5?'))
+        return self.responseGood(self.send_and_rec('RTI5'))
     
     def enableRSSI(self):
         '''
@@ -590,16 +590,22 @@ class RFDConfig(object):
         if self.port.isOpen():
             self.send('ATZ')
     
-    def save(self):
+    def save(self, local=True):
         '''
         TODO
         '''
         
         if self.port.isOpen():
-            self.send('AT&W')
-            self.reset()
-            self.reset()
-            self.send('ATO')
+            if local:
+                self.send('AT&W')
+                self.reset()
+                self.reset()
+                self.send('ATO')
+            else:
+                self.send('RT&W')
+                self.reset()
+                self.reset()
+                self.send('RTO')
             sleep(1)
             self.open(self.port.port, self.port.baudrate)
 
