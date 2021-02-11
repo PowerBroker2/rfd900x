@@ -347,7 +347,7 @@ class RFDConfig(object):
                                            'desValRemote':    None,
                                            'sameOnAllModems': False}}
     
-    def send(self, command, timeout=0.05):
+    def send(self, command, wait=0.25):
         '''
         TODO
         '''
@@ -361,15 +361,16 @@ class RFDConfig(object):
             if command == '+++':
                 sleep(1)
             else:
-                sleep(timeout)
+                sleep(wait)
     
-    def send_and_rec(self, command):
+    def send_and_rec(self, command, wait=0.25):
         '''
         TODO
         '''
         
         if self.port.isOpen():
-            self.send(command)
+            self.send(command, wait)
+            
             try:
                 return self.port.read_all().decode('utf-8')
             except UnicodeDecodeError:
@@ -455,14 +456,17 @@ class RFDConfig(object):
         
         return self.autobaud()
     
-    def close(self):
+    def close(self, local=True):
         '''
         TODO
         '''
         
-        if self.port.isOpen():
-            self.send('ATO')
-            self.port.close()
+        if local:
+            if self.port.isOpen():
+                self.send('ATO')
+                self.port.close()
+        else:
+            self.send('RTO')
     
     def loadParam(self, param, local=True):
         '''
